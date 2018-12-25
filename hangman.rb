@@ -20,12 +20,10 @@ class Board
 	def self.display_board
 		if @@board.kind_of?(String)
 			board = @@board.split("").join(" ") 
-			puts "current board: #{board}"
-			puts "incorrect guesses: #{@@incorrect_guesses.join(" ")}"
+			return "current board: #{board}", "incorrect guesses: #{@@incorrect_guesses.join(" ")}"
 		elsif @@board.kind_of?(Array)
 			board = @@board.join(" ")
-			puts "current board: #{board}"
-			puts "incorrect guesses: #{@@incorrect_guesses.join(" ")}"
+			return "current board: #{board}", "incorrect guesses: #{@@incorrect_guesses.join(" ")}"
 		end
 	end
 
@@ -122,26 +120,25 @@ class Moderator
 	def self.play_game
 		board = Board.new
 		player = Player.new
-		puts "Open saved game? y/n"
-		choice = gets.chomp.downcase
+		"Open saved game? y/n"
 		Moderator.from_yaml if choice == "y"
 		i = 12
 		board.choose_word
 		board.create_board
 		while i > 0
-			puts 
-			puts "Turn #{i}"
+		 
+			"Turn #{i}"
 			Board.display_board
 			player.guess_letter(i)
 			if board.check_victory
-				puts Board.display_board
-				puts "You guessed the word! You win!"
+				Board.display_board
+				"You guessed the word! You win!"
 				exit
 			end
 			i -= 1
 		end
-		puts "You lose! HAHHAHAAA!!"
-		puts "The word was #{Board.secret_word}"
+		"You lose! HAHHAHAAA!!"
+		"The word was #{Board.secret_word}"
 	end	
 
 	def self.to_yaml(turn)
@@ -184,3 +181,33 @@ class Moderator
 	end
 end
 
+class Sinatra1
+	@@board = ""
+	@@secret_word = ""
+	@@incorrect_guesses = []
+
+	def choose_secret_word 
+		lines = File.readlines("5desk.txt")
+		new_lines = lines.map { |e| e.chomp }
+		new_lines.select! {|e| e.length >= 5 && e.length <= 12}
+		@@secret_word = new_lines.sample.downcase
+	end
+
+	def create_board(word)
+		(word.length).times do |e|
+			@@board += "_"
+		end
+	end
+
+	def display_board
+		puts @@board
+		if @@board.kind_of?(String)
+			board = @@board.split("").join(" ") 
+			return "current board: #{board}", @@board
+		elsif @@board.kind_of?(Array)
+			board = @@board.join(" ")
+			return "current board: #{board}", @@board
+		end
+	end
+
+end	
