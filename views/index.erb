@@ -11,11 +11,17 @@
 	</p>
 
 	<p>
-		<%= word %>
+		<%= secret_word %>
 		<br><br>
 		<%= turn %>
 		<br><br>
-		<%= display_board %>
+		<%= Sinatra1.display_board %>
+
+
+		<form>
+			<input type="text" name="letter">
+		</form>
 	</p>	
+
 </body>
 </html>

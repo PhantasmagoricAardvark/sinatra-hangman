@@ -181,33 +181,6 @@ class Moderator
 	end
 end
 
-class Sinatra1
-	@@board = ""
-	@@secret_word = ""
-	@@incorrect_guesses = []
 
-	def choose_secret_word 
-		lines = File.readlines("5desk.txt")
-		new_lines = lines.map { |e| e.chomp }
-		new_lines.select! {|e| e.length >= 5 && e.length <= 12}
-		@@secret_word = new_lines.sample.downcase
-	end
 
-	def create_board(word)
-		(word.length).times do |e|
-			@@board += "_"
-		end
-	end
 
-	def display_board
-		puts @@board
-		if @@board.kind_of?(String)
-			board = @@board.split("").join(" ") 
-			return "current board: #{board}", @@board
-		elsif @@board.kind_of?(Array)
-			board = @@board.join(" ")
-			return "current board: #{board}", @@board
-		end
-	end
-
-end	
