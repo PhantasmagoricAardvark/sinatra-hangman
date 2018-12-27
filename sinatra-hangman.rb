@@ -7,14 +7,14 @@ class Sinatra1
 	@@secret_word = ""
 	@@incorrect_guesses = []
 
-	def choose_secret_word 
+	def self.choose_secret_word 
 		lines = File.readlines("5desk.txt")
 		new_lines = lines.map { |e| e.chomp }
 		new_lines.select! {|e| e.length >= 5 && e.length <= 12}
 		@@secret_word = new_lines.sample.downcase
 	end
 
-	def create_board(word)
+	def self.create_board(word)
 		(word.length).times do |e|
 			@@board += "_"
 		end
@@ -30,7 +30,7 @@ class Sinatra1
 		end
 	end
 
-	def modify_board(guess)
+	def self.modify_board(guess)
 		i = 0 
 		guesses = []
 		@@secret_word_arr = @@secret_word.split("")
@@ -54,26 +54,38 @@ class Sinatra1
 		return @@board
 	end	
 
+	def self.reset
+		@@board = ""
+		@@secret_word = ""
+		@@incorrect_guesses = []
+		secret_word = Sinatra1.choose_secret_word
+		Sinatra1.create_board(secret_word)
+		
+	end
+
+	def self.secret_word
+		@@secret_word
+	end	
+
 end	
 
-sinatra = Sinatra1.new 
-secret_word = sinatra.choose_secret_word
-
-board = sinatra.create_board(secret_word)
-
-
-turn = 12 
+secret_word = Sinatra1.choose_secret_word
+board = Sinatra1.create_board(secret_word)
+turn = 4
 
 
 
 
 get "/" do
-	turn -= 1
 	letter = params["letter"]
+	Sinatra1.modify_board(letter)
 
-
-	sinatra.modify_board(letter)
+	turn -= 1
+	if turn == 0
+		Sinatra1.reset
+		turn = 4
+		secret_word = Sinatra1.secret_word
+	end
 	erb :index, :locals => { :secret_word => secret_word, :turn => turn }
+
 end
-
-
