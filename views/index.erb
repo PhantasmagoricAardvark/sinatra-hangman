@@ -11,12 +11,16 @@
 	</p>
 
 	<p>
-		<%= secret_word %>
+		<%= Sinatra1.secret_word %>
 		<br><br>
-		Turn: <%= turn %>
+		Turn: <%= Sinatra1.turn %>
 		<br><br>
 		<%= Sinatra1.display_board %>
-
+		<% if Sinatra1.check_victory == true %>
+		<br><br>
+			<%= "You win!" %>
+			<% Sinatra1.reset %>
+		<% end %>
 
 		<form>
 			<input type="text" name="letter">

@@ -6,6 +6,7 @@ class Sinatra1
 	@@board = ""
 	@@secret_word = ""
 	@@incorrect_guesses = []
+	@@turn = 12
 
 	def self.choose_secret_word 
 		lines = File.readlines("5desk.txt")
@@ -63,15 +64,45 @@ class Sinatra1
 		
 	end
 
+	def self.check_victory
+		if @@board.kind_of?(Array)
+			if @@board.join("") == @@secret_word
+				@@turn = 12
+				true
+			else
+				return false
+			end
+		else 
+			return false
+		end
+	end
+
+	def self.reduce_turn
+		@@turn -= 1
+	end
+
+	def self.check_turn
+		if @@turn == 0
+			Sinatra1.reset
+			@@turn = 12
+		end	
+	end
+
+	def self.turn
+		@@turn
+	end
+
 	def self.secret_word
 		@@secret_word
 	end	
+
 
 end	
 
 secret_word = Sinatra1.choose_secret_word
 board = Sinatra1.create_board(secret_word)
-turn = 4
+turn = 12
+
 
 
 
@@ -80,12 +111,10 @@ get "/" do
 	letter = params["letter"]
 	Sinatra1.modify_board(letter)
 
-	turn -= 1
-	if turn == 0
-		Sinatra1.reset
-		turn = 4
-		secret_word = Sinatra1.secret_word
-	end
+	Sinatra1.reduce_turn
+	Sinatra1.check_turn
+	
+
 	erb :index, :locals => { :secret_word => secret_word, :turn => turn }
 
 end
