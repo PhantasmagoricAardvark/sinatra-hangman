@@ -11,17 +11,21 @@
 	</p>
 
 	<p>
-		<%= Sinatra1.secret_word %>
-		<br><br>
-		Turn: <%= Sinatra1.turn %>
+		Turn: <%= turn %>
 		<br><br>
 		<%= Sinatra1.display_board %>
-		<% if Sinatra1.check_victory == true %>
 		<br><br>
+		Incorrect guesses: <%= Sinatra1.incorrect_guesses %>
+		<% if Sinatra1.check_victory == true %>
+			<br><br>
 			<%= "You win!" %>
 			<% Sinatra1.reset %>
 		<% end %>
-
+		<% Sinatra1.reduce_turn %>
+		<% if Sinatra1.turn == 0 %>
+			<br><br>
+			You lose! The word was <%= Sinatra1.secret_word %> 
+		<% end %>
 		<form>
 			<input type="text" name="letter">
 			<input type="submit" value="Submit">

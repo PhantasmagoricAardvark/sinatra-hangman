@@ -32,27 +32,31 @@ class Sinatra1
 	end
 
 	def self.modify_board(guess)
-		i = 0 
-		guesses = []
-		@@secret_word_arr = @@secret_word.split("")
-		if @@board.kind_of?(String) 
-			@@board_arr = @@board.split("")
-		else
-			@@board_arr = @@board
-		end
-		while i < @@secret_word_arr.length
-			if @@secret_word_arr[i] == guess
-				guesses << i
+		if @@secret_word.include?(guess)
+			i = 0 
+			guesses = []
+			@@secret_word_arr = @@secret_word.split("")
+			if @@board.kind_of?(String) 
+				@@board_arr = @@board.split("")
+			else
+				@@board_arr = @@board
 			end
-			i += 1
-		end
+			while i < @@secret_word_arr.length
+				if @@secret_word_arr[i] == guess
+					guesses << i
+				end
+				i += 1
+			end
 
-		guesses.each { |e| 
-			@@board_arr.insert(e,guess)
-			@@board_arr.delete_at(e + 1)
-		} 
-		@@board = @@board_arr	
-		return @@board
+			guesses.each { |e| 
+				@@board_arr.insert(e,guess)
+				@@board_arr.delete_at(e + 1)
+			} 
+			@@board = @@board_arr	
+			return @@board
+		else
+			@@incorrect_guesses << guess
+		end
 	end	
 
 	def self.reset
@@ -60,8 +64,7 @@ class Sinatra1
 		@@secret_word = ""
 		@@incorrect_guesses = []
 		secret_word = Sinatra1.choose_secret_word
-		Sinatra1.create_board(secret_word)
-		
+		Sinatra1.create_board(secret_word)		
 	end
 
 	def self.check_victory
@@ -88,6 +91,7 @@ class Sinatra1
 		end	
 	end
 
+
 	def self.turn
 		@@turn
 	end
@@ -96,12 +100,14 @@ class Sinatra1
 		@@secret_word
 	end	
 
+	def self.incorrect_guesses
+		@@incorrect_guesses.join(" ")
+	end
 
 end	
 
 secret_word = Sinatra1.choose_secret_word
 board = Sinatra1.create_board(secret_word)
-turn = 12
 
 
 
@@ -111,10 +117,10 @@ get "/" do
 	letter = params["letter"]
 	Sinatra1.modify_board(letter)
 
-	Sinatra1.reduce_turn
 	Sinatra1.check_turn
 	
 
-	erb :index, :locals => { :secret_word => secret_word, :turn => turn }
+	turn = Sinatra1.turn
+	erb :index, :locals => { :turn => turn }
 
 end
