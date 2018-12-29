@@ -32,7 +32,7 @@ class Sinatra1
 	end
 
 	def self.modify_board(guess)
-		if @@secret_word.include?(guess)
+		if @@secret_word.include?(guess.to_s)
 			i = 0 
 			guesses = []
 			@@secret_word_arr = @@secret_word.split("")
